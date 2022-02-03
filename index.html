@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-main>
+                <v-simple-table class="mt-5">
+                    <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <th>Producto #</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Precio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="producto in productos" >
+                                <td>{{ producto.id }}</td>
+                                <td>{{ producto.nombre }}</td>
+                                <td>{{ producto.descripcion }}</td>
+                                <td>{{ producto.precio }}</td>
+                              
+                                </tr>
+                            </tbody>
+                        </template>
+                </v-simple-table>
+                <form>
+                    <v-text-field label="Nombre" v-model="nombre"></v-text-field>
+                    <v-text-field label="Descripción" v-model="descripcion"></v-text-field>
+                    <v-text-field label="Precio" v-model="precio"></v-text-field>
+                    <v-btn @click="guardar()" type="submit" color="blue darken-2" dark>Guardar</v-btn>
+                </form>
+
+            </v-main>
+        </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/2.5.7/vuetify.min.js" integrity="sha512-BPXn+V2iK/Zu6fOm3WiAdC1pv9uneSxCCFsJHg8Cs3PEq6BGRpWgXL+EkVylCnl8FpJNNNqvY+yTMQRi4JIfZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+    <script>
+        let url = 'http://localhost:8000/api/productos/';
+
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            data() {
+                return {
+                    productos: [],
+                    productos: {
+                        id: '',
+                        nombre: '',
+                        descripcion: '',
+                        precio: ''
+                    }
+                }
+            },
+            created() {
+                this.obtenerDatos()
+            },
+            methods: {
+                //MÉTODOS PARA EL CRUD
+                obtenerDatos: function() {
+                    axios.get(url)
+                        .then(response => {
+                            this.productos = response.data;
+                        })
+                },
+                crear: function() {
+                    let parametros = {
+                        nombre: this.producto.nombre,
+                        descripcion: this.producto.descripcion,
+                        precio: this.producto.precio
+                    };
+                    axios.post(url, parametros)
+                        .then(response => {
+                            this.obtenerDatos();
+                        });
+                    this.nombre = "";
+                    this.descripcion = "";
+                    this.precio = "";
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
